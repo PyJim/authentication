@@ -111,6 +111,7 @@ class OrganisationListView(generics.ListAPIView):
 class OrganisationDetailView(generics.RetrieveAPIView):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
+    lookup_field = 'org_id'
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
@@ -156,6 +157,7 @@ class CreateOrganisationView(generics.CreateAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 class AddUserToOrganisationView(generics.GenericAPIView):
+    lookup_field = 'org_id'
     permission_classes = [IsAuthenticated]
 
     def post(self, request, org_id, *args, **kwargs):
