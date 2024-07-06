@@ -1,1 +1,1 @@
-web: gunicorn webserver.wsgi
+web: gunicorn UserAuthentication.wsgi
