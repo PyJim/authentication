@@ -1,5 +1,6 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+import uuid
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -18,6 +19,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser):
+    userId = models.CharField(max_length=255, default=str(uuid.uuid4()))
     email = models.EmailField(unique=True)
     firstName = models.CharField(max_length=30)
     lastName = models.CharField(max_length=30)
@@ -28,8 +30,9 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
+
 class Organisation(models.Model):
-    org_id = models.CharField(max_length=255, unique=True)
+    orgId = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     users = models.ManyToManyField(User, related_name='organisations')

@@ -21,7 +21,7 @@ class RegisterView(generics.CreateAPIView):
 
                     org_name = f"{user.firstName}'s Organisation"
                     org = Organisation.objects.create(
-                        org_id=str(uuid.uuid4()),
+                        orgId=str(uuid.uuid4()),
                         name=org_name,
                         description=''
                     )
@@ -75,7 +75,7 @@ class LoginView(generics.GenericAPIView):
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    lookup_field = 'id'
+    lookup_field = 'userId'
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
@@ -92,52 +92,25 @@ class UserDetailView(generics.RetrieveAPIView):
             'statusCode': 403
         }, status=status.HTTP_403_FORBIDDEN)
 
-class OrganisationListView(generics.ListAPIView):
+class OrganisationsView(generics.ListAPIView):
     serializer_class = OrganisationSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return self.request.user.organisations.all()
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+    def get(self, request, *args, **kwargs):
+        queryset = self.request.user.organisations.all()
         serializer = self.get_serializer(queryset, many=True)
         return Response({
             'status': 'success',
             'message': 'Organisations retrieved',
             'data': {'organisations': serializer.data}
         }, status=status.HTTP_200_OK)
-
-class OrganisationDetailView(generics.RetrieveAPIView):
-    queryset = Organisation.objects.all()
-    serializer_class = OrganisationSerializer
-    lookup_field = 'org_id'
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        org = self.get_object()
-        if request.user in org.users.all():
-            return Response({
-                'status': 'success',
-                'message': 'Organisation record',
-                'data': OrganisationSerializer(org).data
-            }, status=status.HTTP_200_OK)
-        return Response({
-            'status': 'Forbidden',
-            'message': 'You do not have access to this organisation\'s record',
-            'statusCode': 403
-        }, status=status.HTTP_403_FORBIDDEN)
-
-class CreateOrganisationView(generics.CreateAPIView):
-    serializer_class = OrganisationSerializer
-    permission_classes = [IsAuthenticated]
-
+    
     def post(self, request, *args, **kwargs):
         data = request.data
         try:
             with transaction.atomic():
                 org = Organisation.objects.create(
-                    org_id=str(uuid.uuid4()),
+                    orgId=str(uuid.uuid4()),
                     name=data['name'],
                     description=data.get('description', '')
                 )
@@ -156,16 +129,38 @@ class CreateOrganisationView(generics.CreateAPIView):
                 'errors': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
-class AddUserToOrganisationView(generics.GenericAPIView):
-    lookup_field = 'org_id'
+class OrganisationDetailView(generics.RetrieveAPIView):
+    queryset = Organisation.objects.all()
+    serializer_class = OrganisationSerializer
+    lookup_field = 'orgId'
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, org_id, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        org = self.get_object()
+        if request.user in org.users.all():
+            return Response({
+                'status': 'success',
+                'message': 'Organisation record',
+                'data': OrganisationSerializer(org).data
+            }, status=status.HTTP_200_OK)
+        return Response({
+            'status': 'Forbidden',
+            'message': 'You do not have access to this organisation\'s record',
+            'statusCode': 403
+        }, status=status.HTTP_403_FORBIDDEN)
+
+    
+
+class AddUserToOrganisationView(generics.GenericAPIView):
+    lookup_field = 'orgId'
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, orgId, *args, **kwargs):
         data = request.data
         try:
-            org = Organisation.objects.get(org_id=org_id)
+            org = Organisation.objects.get(orgId=orgId)
             if request.user in org.users.all():
-                user = User.objects.get(user_id=data['userId'])
+                user = User.objects.get(userId=data['userId'])
                 org.users.add(user)
                 org.save()
                 return Response({
