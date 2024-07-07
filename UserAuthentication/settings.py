@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'koyebdb',
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': 'ep-blue-hill-a4tsjtl8.us-east-1.pg.koyeb.app',
+        'HOST': 'ep-still-snowflake-a2e0r1b9.eu-central-1.pg.koyeb.app',
         'OPTIONS': {'sslmode': 'require'},
     }
 }
