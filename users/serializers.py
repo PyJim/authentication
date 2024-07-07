@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['firstName', 'lastName', 'email', 'password', 'phone']
+        fields = ['userId', 'firstName', 'lastName', 'email', 'password', 'phone']
 
     def validate(self, data):
         if 'password' not in data or not data['password']:
@@ -33,4 +33,4 @@ class UserSerializer(serializers.ModelSerializer):
 class OrganisationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organisation
-        fields = ['org_id', 'name', 'description']
+        fields = ['orgId', 'name', 'description']
