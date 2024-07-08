@@ -75,7 +75,7 @@ class LoginView(generics.GenericAPIView):
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    lookup_field = 'id'
+    lookup_field = 'userId'
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
