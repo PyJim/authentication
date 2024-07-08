@@ -96,11 +96,10 @@ DATABASES = {
         'NAME': 'koyebdb',
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': 'ep-still-snowflake-a2e0r1b9.eu-central-1.pg.koyeb.app',
+        'HOST': 'ep-misty-resonance-a200al9w.eu-central-1.pg.koyeb.app',
         'OPTIONS': {'sslmode': 'require'},
     }
 }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
